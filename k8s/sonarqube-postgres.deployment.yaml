@@ -1,0 +1,52 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube-postgres
+spec:
+  selector:
+    matchLabels:
+      app: sonarqube-postgres
+  template:
+    metadata:
+      labels:
+        app: sonarqube-postgres
+    spec:
+      containers:
+      - name: database
+        image: postgres:11
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: sonarqube-postgres-config
+                key: database
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                name: sonarqube-postgres-config
+                key: user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: sonarqube-postgres-config
+                key: password
+          - name: PGDATA
+            value: /mnt/do/postgresql/data
+        resources: { }
+        ports:
+          - containerPort: 5432
+        volumeMounts:
+          - name: database-volume
+            mountPath: /mnt/do/postgresql
+      initContainers:
+      - name: pgsql-data-permission-fix
+        image: busybox
+        command: ["/bin/chmod","-R","777", "/data"]
+        volumeMounts:
+        - name: database-volume
+          mountPath: /data
+      volumes:
+        - name: database-volume
+          persistentVolumeClaim:
+            claimName: sonarqube-postgres-pvc

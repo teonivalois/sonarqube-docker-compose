@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-postgres-backup-config
+data:
+  do_access_key: YOUR_DIGITALOCEAN_ACCESS_KEY
+  do_secret: YOUR_DIGITALOCEAN_SECRET
+  do_space_endpoint: YOUR_DIGITALOCEAN_SPACE_NAME.nyc3.digitaloceanspaces.com
+  do_space_name: YOUR_DIGITALOCEAN_SPACE_NAME
+  do_space_path: /backup/
+  do_acl: x-amz-acl:private

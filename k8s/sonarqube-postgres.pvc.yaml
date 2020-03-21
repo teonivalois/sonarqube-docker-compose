@@ -1,0 +1,17 @@
+# This is the storage for the database used by the application.
+# ===========================================================================================
+# /!\ Billing for the block storage volume begins when the object is successfully created.
+#     To end billing, you must explicitly delete the volume.
+#     Make sure to remove the PVC from your cluster before deleting the block storage volume.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarqube-postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: do-block-storage

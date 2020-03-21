@@ -1,0 +1,64 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sonarqube-postgres-backup
+spec:
+  schedule: "0 */1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: sonarqube-postgres-backup
+            image: teonivalois/postgres-backup-do-spaces:11-alpine
+            imagePullPolicy: Always
+            resources: { }
+            env:
+              - name: DO_ACCESS_KEY
+                valueFrom:
+                  configMapKeyRef:
+                    key: do_access_key
+                    name: sonarqube-postgres-backup-config
+              - name: DO_SECRET
+                valueFrom:
+                  configMapKeyRef:
+                    key: do_secret
+                    name: sonarqube-postgres-backup-config
+              - name: DO_SPACE_ENDPOINT
+                valueFrom:
+                  configMapKeyRef:
+                    key: do_space_endpoint
+                    name: sonarqube-postgres-backup-config
+              - name: DO_SPACE_NAME
+                valueFrom:
+                  configMapKeyRef:
+                    key: do_space_name
+                    name: sonarqube-postgres-backup-config
+              - name: DO_SPACE_PATH
+                valueFrom:
+                  configMapKeyRef:
+                    key: do_space_path
+                    name: sonarqube-postgres-backup-config
+              - name: DO_ACL
+                valueFrom:
+                  configMapKeyRef:
+                    key: do_acl
+                    name: sonarqube-postgres-backup-config
+              - name: POSTGRES_DB
+                valueFrom:
+                  configMapKeyRef:
+                    name: sonarqube-postgres-config
+                    key: database
+              - name: POSTGRES_USER
+                valueFrom:
+                  configMapKeyRef:
+                    name: sonarqube-postgres-config
+                    key: user
+              - name: POSTGRES_PASSWORD
+                valueFrom:
+                  configMapKeyRef:
+                    name: sonarqube-postgres-config
+                    key: password
+              - name: POSTGRES_HOST
+                value: sonarqube-postgres

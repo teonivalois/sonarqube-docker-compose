@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube
+spec:
+  selector:
+    matchLabels:
+      app: sonarqube
+  template:
+    metadata:
+      labels:
+        app: sonarqube
+    spec:
+      containers:
+      - name: sonarqube
+        image: sonarqube:8.2-community
+        imagePullPolicy: Always
+        resources: { }
+        env:
+          - name: SONAR_JDBC_URL
+            valueFrom:
+              configMapKeyRef:
+                key: jdbcUrl
+                name: sonarqube-config
+          - name: SONAR_JDBC_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                key: jdbcUser
+                name: sonarqube-config
+          - name: SONAR_JDBC_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: jdbcPassword
+                name: sonarqube-config
+        ports:
+        - containerPort: 9000
